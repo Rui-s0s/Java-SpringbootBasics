@@ -23,6 +23,7 @@ public class Greeting {
 
     @NotBlank(message = "Message cannot be empty")
     private String message;
+    
     @Enumerated(EnumType.STRING)
     private GreetingStatus status = GreetingStatus.PENDING;
 

@@ -1,7 +1,10 @@
 package com.fintech.banking_service.controller;
 
+import com.fintech.banking_service.dto.GreetingRequest;
 import com.fintech.banking_service.model.Greeting;
 import com.fintech.banking_service.repository.GreetingRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,9 +26,12 @@ public class HelloController {
 
     // 1. CREATE (POST)
     @PostMapping
-    public Greeting createGreeting(@Valid @RequestBody Greeting greeting) {
+    public ResponseEntity<Greeting> createGreeting(@Valid @RequestBody GreetingRequest request) {
         // 1. Logs before saving (ID is null)
-        log.info("Received request to create: {} status: {}", greeting.getMessage(), greeting.getStatus());
+        log.info("Received request to create: {}", request.getMessage());
+
+        Greeting greeting = new Greeting();
+        greeting.setMessage(request.getMessage());
 
         // 2. Save the object and get the UPDATED version back
         Greeting savedGreeting = repository.save(greeting);
@@ -33,7 +39,7 @@ public class HelloController {
         // 3. Now the ID exists!
         log.info("Saved greeting to DB with ID: {}", savedGreeting.getId());
 
-        return savedGreeting;
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedGreeting);
     }
 
     // 2. READ ALL (GET)
